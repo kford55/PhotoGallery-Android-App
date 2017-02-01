@@ -1,16 +1,23 @@
 package kennethford.photogallery;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.io.IOException;
+
 public class PhotoGalleryFragment extends Fragment {
 
     private RecyclerView mRecyclerView;
+
+    private static final String TAG = "PhotoGalleryFragment";
+
 
     public static PhotoGalleryFragment newInstance() {
         return new PhotoGalleryFragment();
@@ -20,6 +27,7 @@ public class PhotoGalleryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        new FetchItemsTask().execute();
     }
 
     @Override
@@ -31,5 +39,13 @@ public class PhotoGalleryFragment extends Fragment {
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
 
         return v;
+    }
+
+    private class FetchItemsTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            new FlickrFetcher().fetchItem();
+            return null;
+        }
     }
 }
